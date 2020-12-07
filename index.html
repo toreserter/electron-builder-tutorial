@@ -6,5 +6,16 @@
 </head>
 <body>
 <h1>Hello World!</h1>
+<h3>Version: <span id="version"></span></h3>
 </body>
 </html>
+
+<script>
+    const electron = require('electron');
+    const { ipcRenderer } = electron;
+
+    ipcRenderer.on("version", function (event, data) {
+        document.getElementById('version').innerText = data;
+        console.log(data);
+    });
+</script>

@@ -1,15 +1,25 @@
-const { app, BrowserWindow } = require('electron')
-
-function createWindow () {
-    const mainWindow = new BrowserWindow({
+const electron = require("electron");
+const { app, BrowserWindow, Menu, ipcMain } = electron;
+const isMac = process.platform === 'darwin'
+let mainWindow;
+app.on("ready", function() {
+    mainWindow = new BrowserWindow({
         width: 800,
-        height: 600
+        height: 600,
+        webPreferences: {
+            nodeIntegration: true,
+            webviewTag: false
+        }
     })
+    renderIndex();
+});
 
-    mainWindow.loadFile('index.html')
+renderIndex = async () => {
+    global.version = app.getVersion();
+    console.log(global.version);
+    await mainWindow.loadFile('index.html');
+    mainWindow.webContents.send("version", global.version);
 }
-
-app.whenReady().then(createWindow)
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
@@ -19,6 +29,44 @@ app.on('window-all-closed', () => {
 
 app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
-        createWindow()
+        renderIndex()
     }
 })
+
+const mainMenuTemplate = [
+    {
+        label: app.name,
+        submenu: [
+            {
+                label: "Exit",
+                accelerator: isMac ? "Command+Q" : "Ctrl+Q",
+                role: "quit"
+            }
+
+        ]
+    }
+];
+
+// Add developer tools item if not in production
+if (process.env.NODE_ENV != "production"){
+    mainMenuTemplate.push({
+        label: 'Developer Tools',
+        submenu: [
+            {
+                label: 'Toogle DevTools',
+                accelerator: process.platform == 'darwin' ? "Command+D" : "Ctrl+D",
+                click(item,focusedWindow) {
+                    focusedWindow.toggleDevTools();
+                }
+            },
+            {
+                role: 'reload'
+            }
+        ]
+    });
+}
+
+
+const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
+
+Menu.setApplicationMenu(mainMenu);
