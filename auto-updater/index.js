@@ -1,7 +1,9 @@
 const electron = require('electron')
 const { app } = electron;
 const os = require('os')
-const autoUpdater = electron.autoUpdater
+//const autoUpdater = electron.autoUpdater
+const { autoUpdater } = require("electron-updater")
+
 
 const appVersion = app.getVersion();
 
