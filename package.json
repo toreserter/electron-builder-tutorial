@@ -4,7 +4,7 @@
   "description": "Tutorial for Electron Builder",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
+    "start": "APP_DEV=true electron .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build-mac": "electron-builder --mac",
     "build-win": "electron-builder --win",

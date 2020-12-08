@@ -1,7 +1,13 @@
 const electron = require("electron");
-const { app, BrowserWindow, Menu, ipcMain } = electron;
+const { app, BrowserWindow, Menu, ipcMain, protocol } = electron;
+const path = require("path");
 const isMac = process.platform === 'darwin'
 let mainWindow;
+
+global.appRoot = path.resolve(__dirname);
+var isDev = process.env.APP_DEV ? (process.env.APP_DEV.trim() == "true") : false;
+const autoUpdater = require(appRoot + '/auto-updater')
+
 app.on("ready", function() {
     mainWindow = new BrowserWindow({
         width: 800,
@@ -12,13 +18,17 @@ app.on("ready", function() {
         }
     })
     renderIndex();
+
+    mainWindow.webContents.on('did-finish-load', () => {
+        autoUpdater.init(mainWindow)
+    })
 });
 
 renderIndex = async () => {
     global.version = app.getVersion();
     console.log(global.version);
-    await mainWindow.loadFile('index.html');
-    mainWindow.webContents.send("version", global.version);
+    await mainWindow.loadURL(`file://${__dirname}/index.html`);
+    mainWindow.webContents.send("version", [global.version, isDev]);
 }
 
 app.on('window-all-closed', () => {
