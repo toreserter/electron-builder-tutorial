@@ -25,7 +25,11 @@ function init(mainWindow) {
 
     initialized = true
     console.log('initialized AutoUpdater');
-    autoUpdater.setFeedURL(updateFeed)
+    //autoUpdater.setFeedURL(updateFeed)
+    autoUpdater.setFeedURL({
+        provider: 'generic',
+        url: 'https://hr-kbs-updater.herokuapp.com/download/latest'
+    })
 
     autoUpdater.on('error', (ev, err) => {
         mainWindow.webContents.send('updater-message', { msg: `😱 Error: ${err}` })
