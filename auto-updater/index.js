@@ -1,35 +1,19 @@
 const electron = require('electron')
 const { app } = electron;
-const os = require('os')
-//const autoUpdater = electron.autoUpdater
 const { autoUpdater } = require("electron-updater")
 
 
 const appVersion = app.getVersion();
 
-let updateFeed = ''
 let initialized = false
-const platform = `${os.platform()}_${os.arch()}`
-const nutsURL = 'http://hr-kbs-updater.herokuapp.com'
 var isDev = process.env.APP_DEV ? (process.env.APP_DEV.trim() == "true") : false;
-
-if (os.platform() === 'darwin') {
-    updateFeed = `${nutsURL}/update/${platform}/${appVersion}`
-} else if (os.platform() === 'win32') {
-    updateFeed = `${nutsURL}/update/win32/${appVersion}`
-}
 
 function init(mainWindow) {
     mainWindow.webContents.send('updater-message', { msg: `🖥 App version: ${appVersion}` })
-    if (initialized || !updateFeed || isDev) { return }
+    if (initialized || isDev) { return }
 
     initialized = true
     console.log('initialized AutoUpdater');
-    //autoUpdater.setFeedURL(updateFeed)
-    autoUpdater.setFeedURL({
-        provider: 'generic',
-        url: 'https://hr-kbs-updater.herokuapp.com/download/latest'
-    })
 
     autoUpdater.on('error', (ev, err) => {
         mainWindow.webContents.send('updater-message', { msg: `😱 Error: ${err}` })
