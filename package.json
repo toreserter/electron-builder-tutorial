@@ -1,6 +1,6 @@
 {
   "name": "electron-builder-tutorial",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Tutorial for Electron Builder",
   "main": "main.js",
   "scripts": {

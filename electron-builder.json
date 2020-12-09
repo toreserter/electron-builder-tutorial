@@ -1,0 +1,13 @@
+{
+  "appId": "com.electron-builder-tutorial.app",
+  "productName": "Electron Builder Tutorial",
+  "copyright": "Copyright © Company",
+  "directories": {
+    "output": "release/"
+  },
+  "publish": {
+    "provider": "s3",
+    "bucket": "electron-builder-tutorial",
+    "region": "eu-west-1"
+  }
+}
